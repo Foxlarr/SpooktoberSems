@@ -11,6 +11,8 @@
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <assured.version>5.3.0</assured.version>
+        <jackson.version>2.15.0</jackson.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -36,7 +38,24 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>mvnrepository</id>
+            <url>https://mvnrepository.com/</url>
+        </repository>
+    </repositories>
 
 </project>
