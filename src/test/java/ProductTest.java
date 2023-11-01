@@ -1,89 +1,80 @@
 import org.example.Product;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ProductTest {
-    private static SessionFactory factory;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-    @BeforeClass
-    public static void setUp() {
-        factory = new Configuration().configure().buildSessionFactory();
+public class ProductTest extends AbstractTest {
+
+    private Session session;
+
+    @BeforeEach
+    void setUp() {
+        session = getSession(); // Получаем сессию Hibernate перед каждым тестом
+        session.beginTransaction(); // Начинаем транзакцию для тестов
     }
 
-    @AfterClass
-    public static void tearDown() {
-        if (factory != null) {
-            factory.close();
-        }
-    }
-
-    @Test
-    public void testCreateProduct() {
-        Session session = factory.openSession();
-        Transaction tx = null;
-
-        try {
-            tx = session.beginTransaction();
-            Product product = new Product();
-            product.setMenuName("New Product");
-            product.setPrice(99.99);
-            session.save(product);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
+    @AfterEach
+    void tearDown() {
+        session.getTransaction().commit(); // Завершаем транзакцию после каждого теста
+        session.close(); // Закрываем сессию
     }
 
     @Test
-    public void testReadProduct() {
-        Session session = factory.openSession();
-        Product product = session.get(Product.class, 1); // Assuming product with ID 1 exists
-        session.close();
+    void testProductCreation() {
+        Product product = new Product();
+        product.setMenuName("Test Product");
+        product.setPrice(10.99);
 
-        Assert.assertNotNull(product);
+        session.save(product);
+
+        // Проверяем, что объект был сохранен в базу данных
+        assertNotNull(product.getProductId());
+
+        // Извлекаем объект из базы данных и сравниваем его с оригинальным объектом
+        Product retrievedProduct = session.get(Product.class, product.getProductId());
+        assertEquals(product, retrievedProduct);
     }
 
     @Test
-    public void testUpdateProduct() {
-        Session session = factory.openSession();
-        Transaction tx = null;
+    void testProductUpdate() {
+        Product product = new Product();
+        product.setMenuName("Original Product");
+        product.setPrice(15.99);
 
-        try {
-            tx = session.beginTransaction();
-            Product product = session.get(Product.class, 1); // Assuming product with ID 1 exists
-            product.setMenuName("Updated Product");
-            product.setPrice(49.99);
-            session.update(product);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
+        session.save(product);
+
+        // Изменяем название и цену продукта
+        product.setMenuName("Updated Product");
+        product.setPrice(19.99);
+
+        session.update(product);
+
+        // Проверяем, что объект был успешно обновлен
+        Product updatedProduct = session.get(Product.class, product.getProductId());
+        assertEquals("Updated Product", updatedProduct.getMenuName());
+        assertEquals(19.99, updatedProduct.getPrice(), 0.01);
     }
 
     @Test
-    public void testDeleteProduct() {
-        Session session = factory.openSession();
-        Transaction tx = null;
+    void testProductDeletion() {
+        Product product = new Product();
+        product.setMenuName("Product to Delete");
+        product.setPrice(5.99);
 
-        try {
-            tx = session.beginTransaction();
-            Product product = session.get(Product.class, 1); // Assuming product with ID 1 exists
-            session.delete(product);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
+        session.save(product);
+
+        int productId = product.getProductId();
+
+        // Удаляем продукт из базы данных
+        session.delete(product);
+
+        // Проверяем, что объект больше не существует в базе данных
+        Product deletedProduct = session.get(Product.class, productId);
+        assertNull(deletedProduct);
     }
 }
