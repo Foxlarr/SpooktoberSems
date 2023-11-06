@@ -1,7 +1,7 @@
 import io.restassured.RestAssured;
 
 public class ApiTestConfig {
-    private static final String API_KEY = "MvBCZak8ZGvA4H40NW5n0OBS660gsME7";
+    private static final String API_KEY = "VL94V9VobDa5FGDxsjnVvaCXkyGMLMAl";
 
     public static void setup() {
         RestAssured.baseURI = "http://dataservice.accuweather.com";
