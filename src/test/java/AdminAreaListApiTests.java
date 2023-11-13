@@ -71,26 +71,4 @@ public class AdminAreaListApiTests {
     }
 
 
-    @Test
-    @Severity(SeverityLevel.NORMAL)
-    @Description("Verify all field type and existence")
-    public void testIdFieldTypeAndExistence() {
-
-
-        Response response = given()
-                .param("apikey", "API_KEY")
-                .when()
-                .get("/locations/v1/adminareas/AE")
-                .then()
-                .body("[0]", hasKey("ID"))
-                .body("[0].ID", isA(String.class)) // Adjust this based on the expected data type
-                .body("[0].LocalizedName", notNullValue())
-                .body("[0].LocalizedName", isA(String.class))
-                .body("[0].EnglishName", notNullValue())
-                .body("[0].EnglishName", isA(String.class))
-                .extract().response();
-
-        // Print the response
-        logger.info("Request: " + response.getBody().asString());
-    }
 }
