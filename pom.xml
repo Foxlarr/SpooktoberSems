@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <assured.version>5.3.0</assured.version>
         <jackson.version>2.15.1</jackson.version>
-        <junit.version>5.9.2</junit.version>
+
         <logback.version>1.4.7</logback.version>
         <slf4j.version>2.0.5</slf4j.version>
 
@@ -23,19 +23,7 @@
 
     </properties>
         <dependencies>
-            <!-- junit -->
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-params</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
+
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -75,12 +63,7 @@
         <version>${wiremock.version}</version>
         </dependency>
 
-            <dependency>
-                <groupId>org.testng</groupId>
-                <artifactId>testng</artifactId>
-                <version>7.7.0</version>
-                <scope>test</scope>
-            </dependency>
+
 
             <dependency>
                 <groupId>io.qameta.allure</groupId>
@@ -91,7 +74,9 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.13.2</version>
+                <scope>test</scope>
             </dependency>
+
 
         </dependencies>
 
