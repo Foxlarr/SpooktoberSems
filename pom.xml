@@ -19,23 +19,26 @@
         <allure.junit.version>2.22.1</allure.junit.version>
         <wiremock.version>1.58</wiremock.version>
         <surefire.version>2.22.2</surefire.version>
-
+        <junit.jupiter.version>5.9.2</junit.jupiter.version> <!-- Версия JUnit 5 -->
 
     </properties>
-        <dependencies>
+    <dependencies>
 
+        <!-- RestAssured -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>${assured.version}</version>
             <scope>test</scope>
         </dependency>
-            <!-- Jackson -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
+
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
         <!-- Логирование -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -55,31 +58,30 @@
             <version>${logback.version}</version>
         </dependency>
 
-
         <!-- WireMock -->
         <dependency>
-        <groupId>com.github.tomakehurst</groupId>
-        <artifactId>wiremock</artifactId>
-        <version>${wiremock.version}</version>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${wiremock.version}</version>
         </dependency>
 
-            <dependency>
-                <groupId>io.qameta.allure</groupId>
-                <artifactId>allure-junit5</artifactId>
-                <version>${allure.junit.version}</version>
-            </dependency>
+        <!-- Allure JUnit 5 -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <version>${allure.junit.version}</version>
+        </dependency>
 
+        <!-- JUnit 5 -->
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
 
-
-
-        </dependencies>
+    </dependencies>
 
     <!-- Сборка -->
     <build>
@@ -99,7 +101,6 @@
             </plugin>
         </plugins>
     </build>
-
 
     <repositories>
         <repository>
