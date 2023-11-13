@@ -1,10 +1,15 @@
+<!-- logback.xml -->
 <configuration>
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- Define appenders and loggers here -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-    <root level="info">
-        <appender-ref ref="console"/>
+
+    <logger name="com.example" level="debug"/>
+
+    <root level="error">
+        <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

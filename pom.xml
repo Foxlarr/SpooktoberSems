@@ -16,7 +16,7 @@
 
         <logback.version>1.4.7</logback.version>
         <slf4j.version>2.0.5</slf4j.version>
-
+        <allure.junit.version>2.22.1</allure.junit.version>
         <wiremock.version>1.58</wiremock.version>
         <surefire.version>2.22.2</surefire.version>
 
@@ -63,19 +63,20 @@
         <version>${wiremock.version}</version>
         </dependency>
 
-
-
             <dependency>
                 <groupId>io.qameta.allure</groupId>
-                <artifactId>allure-testng</artifactId>
-                <version>2.21.0</version>
+                <artifactId>allure-junit5</artifactId>
+                <version>${allure.junit.version}</version>
             </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.13.2</version>
-                <scope>test</scope>
-            </dependency>
+
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
 
 
         </dependencies>

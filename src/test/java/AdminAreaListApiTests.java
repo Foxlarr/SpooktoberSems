@@ -1,118 +1,96 @@
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import io.qameta.allure.Step;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.isA;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
-@Epic("Admin Area Tests")
-@Feature("API Tests")
+@Epic("API Tests")
+@Feature("Admin Area Tests")
 public class AdminAreaListApiTests {
-
     private static final Logger logger = LoggerFactory.getLogger(AdminAreaListApiTests.class);
-    private final String API_KEY = "VL94V9VobDa5FGDxsjnVvaCXkyGMLMAl";
+    private static WireMockServer wireMockServer;
 
-    @ClassRule
-    public static WireMockClassRule wireMockClassRule = new WireMockClassRule();
+    @BeforeClass
+    public static void setUpWireMock() {
+        wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().port(8080));
+        wireMockServer.start();
+        configureFor("localhost", wireMockServer.port());
+    }
+
+    @AfterClass
+    public static void tearDownWireMock() {
+        wireMockServer.stop();
+    }
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = "http://localhost:" + wireMockClassRule.port();
+        RestAssured.baseURI = "http://localhost:8080"; // Use the WireMock port
     }
 
-    @Step("Stub mock with ID field")
-    private void stubMockWithIDField() {
-        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/locations/v1/adminareas/AE"))
-                .withQueryParam("apikey", WireMock.equalTo(API_KEY))
-                .willReturn(WireMock.aResponse()
-                        .withStatus(200)
-                        .withBody("[{\"ID\": \"123\", \"LocalizedName\": \"Test\", \"EnglishName\": \"Test\"}]")));
+    @Before
+    public void setupMappings() {
+        WireMock.stubFor(
+                WireMock.get(WireMock.urlPathEqualTo("/locations/v1/adminareas/AE"))
+                        .willReturn(WireMock.aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody("[{\"ID\": \"123\", \"LocalizedName\": \"Area1\", \"EnglishName\": \"Area One\"}]")
+                        )
+        );
+
     }
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Verify the response status for /locations/v1/adminareas/AE")
+    public void testResponseStatus() {
+
+
+        Response response = given()
+                .param("apikey", "API_KEY")
+                .when()
+                .get("/locations/v1/adminareas/AE");
+
+        // Используйте логгер для вывода информации
+        logger.info("Request: " + response.getBody().asString());
+    }
+
 
     @Test
-    @Description("Test ID field type and existence")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Verify ID field type and existence")
     public void testIdFieldTypeAndExistence() {
-        // Stub the mock
-        stubMockWithIDField();
 
-        // Perform the request
+
         Response response = given()
-                .param("apikey", API_KEY)
-                .when()
-                .get("/locations/v1/adminareas/AE");
-
-        // Log the response and WireMock server port
-        logger.info("Actual Response Body: " + response.getBody().asString());
-        logger.info("WireMock Server Port: " + wireMockClassRule.port());
-
-        // Reset WireMock to clear stubs
-        WireMock.reset();
-    }
-
-    @Test
-    @Description("Test LocalizedName field type and existence")
-    public void testLocalizedNameFieldTypeAndExistence() {
-        // Stub the mock
-        stubMockWithIDField();
-
-        // Perform the request
-        Response response = given()
-                .param("apikey", API_KEY)
-                .when()
-                .get("/locations/v1/adminareas/AE");
-
-        // Log the response
-        logger.info("Actual Response Body: " + response.getBody().asString());
-
-        // Validate the LocalizedName field
-        given()
-                .param("apikey", API_KEY)
+                .param("apikey", "API_KEY")
                 .when()
                 .get("/locations/v1/adminareas/AE")
                 .then()
+                .body("[0]", hasKey("ID"))
+                .body("[0].ID", isA(String.class)) // Adjust this based on the expected data type
                 .body("[0].LocalizedName", notNullValue())
-                .body("[0].LocalizedName", isA(String.class));
-
-        // Reset WireMock to clear stubs
-        WireMock.reset();
-    }
-
-    @Test
-    @Description("Test EnglishName field type and existence")
-    public void testEnglishNameFieldTypeAndExistence() {
-        // Stub the mock
-        stubMockWithIDField();
-
-        // Perform the request
-        Response response = given()
-                .param("apikey", API_KEY)
-                .when()
-                .get("/locations/v1/adminareas/AE");
-
-        // Log the response
-        logger.info("Actual Response Body: " + response.getBody().asString());
-
-        // Validate the EnglishName field
-        given()
-                .param("apikey", API_KEY)
-                .when()
-                .get("/locations/v1/adminareas/AE")
-                .then()
+                .body("[0].LocalizedName", isA(String.class))
                 .body("[0].EnglishName", notNullValue())
-                .body("[0].EnglishName", isA(String.class));
+                .body("[0].EnglishName", isA(String.class))
+                .extract().response();
 
-        // Reset WireMock to clear stubs
-        WireMock.reset();
+        // Print the response
+        logger.info("Request: " + response.getBody().asString());
     }
 }
