@@ -73,7 +73,7 @@ public class AdminAreaListApiTests {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @Description("Verify ID field type and existence")
+    @Description("Verify all field type and existence")
     public void testIdFieldTypeAndExistence() {
 
 
