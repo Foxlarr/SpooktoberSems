@@ -3,18 +3,15 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
+import org.junit.jupiter.api.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
@@ -26,24 +23,24 @@ public class AdminAreaListApiTests {
     private static final Logger logger = LoggerFactory.getLogger(AdminAreaListApiTests.class);
     private static WireMockServer wireMockServer;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpWireMock() {
         wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().port(8080));
         wireMockServer.start();
         configureFor("localhost", wireMockServer.port());
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownWireMock() {
         wireMockServer.stop();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         RestAssured.baseURI = "http://localhost:8080"; // Use the WireMock port
     }
 
-    @Before
+    @BeforeEach
     public void setupMappings() {
         WireMock.stubFor(
                 WireMock.get(WireMock.urlPathEqualTo("/locations/v1/adminareas/AE"))
@@ -55,12 +52,11 @@ public class AdminAreaListApiTests {
         );
 
     }
+
     @Test
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify the response status for /locations/v1/adminareas/AE")
     public void testResponseStatus() {
-
-
         Response response = given()
                 .param("apikey", "API_KEY")
                 .when()
@@ -70,13 +66,10 @@ public class AdminAreaListApiTests {
         logger.info("Request: " + response.getBody().asString());
     }
 
-
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @Description("Verify all field type and existence")
+    @Description("Verify ID field type and existence")
     public void testIdFieldTypeAndExistence() {
-
-
         Response response = given()
                 .param("apikey", "API_KEY")
                 .when()
